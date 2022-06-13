@@ -1,10 +1,16 @@
-# buildspace DNS starter project
+# My DApp, the Bitcoinera Name Service DApp
 
-## My DApp, the Bitcoinera Name Service DApp
+<div align="center">
+    <img src="./public/splash.png"/>
+</div>
+
+<br/>
 
 <div align="center">
     <img src="./src/assets/readme-dapp-preview.png"/>
 </div>
+
+[Here](https://bitcoinera-name-service.netlify.app/) to the "production" deployment
 
 <br/>
 
