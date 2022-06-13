@@ -11,11 +11,12 @@ import contractAbi from "./utils/contractABI.json";
 const TWITTER_HANDLE = "Bitcoin3ra";
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 const tld = ".bit";
-const CONTRACT_ADDRESS = "0x8533170d42d65cE80c2993344ec74BA7471a9a15";
+const CONTRACT_ADDRESS = "0x8621D0f17893B2F1064fbBe57Ed611161E64A207";
 
 const App = () => {
   const [currentAccount, setCurrentAccount] = useState("");
   const [domain, setDomain] = useState("");
+  const [newDomain, setNewDomain] = useState("");
   const [network, setNetwork] = useState("");
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -106,9 +107,13 @@ const App = () => {
         <div className="first-row">
           <input
             type="text"
-            value={domain}
-            placeholder="domain"
-            onChange={(e) => setDomain(e.target.value)}
+            value={editing ? newDomain : domain}
+            placeholder={editing ? "new domain" : "domain"}
+            onChange={
+              editing
+                ? (e) => setNewDomain(e.target.value)
+                : (e) => setDomain(e.target.value)
+            }
           />
           <p className="tld"> {tld} </p>
         </div>
@@ -117,7 +122,7 @@ const App = () => {
           <div className="button-container">
             <button
               className="cta-button mint-button"
-              disabled={true}
+              disabled={loading}
               onClick={updateDomain}
             >
               Set Domain
@@ -250,7 +255,8 @@ const App = () => {
   };
 
   const updateDomain = async () => {
-    if (!domain) {
+    console.log("UPDATE DOMAIN", domain, newDomain);
+    if (!domain || !newDomain) {
       return;
     }
     setLoading(true);
@@ -258,16 +264,22 @@ const App = () => {
     try {
       const { ethereum } = window;
       if (ethereum) {
-        // const provider = new ethers.providers.Web3Provider(ethereum);
-        // const signer = provider.getSigner();
-        // const contract = new ethers.Contract(
-        //   CONTRACT_ADDRESS,
-        //   contractAbi.abi,
-        //   signer
-        // );
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(
+          CONTRACT_ADDRESS,
+          contractAbi.abi,
+          signer
+        );
+
+        let tx = await contract.setDomain(domain, newDomain);
+        await tx.wait();
+        console.log("Domain edited set https://polygonscan.com/tx/" + tx.hash);
 
         fetchMints();
         setDomain("");
+        setNewDomain("");
+        setEditing(false);
       }
     } catch (error) {
       console.log(error);
@@ -329,7 +341,7 @@ const App = () => {
         );
 
         // Get all the domain names from our contract
-        const names = await contract.getAllNames();
+        const names = await contract.getDomains();
         console.log(
           "Domains discovered for address " + currentAccount + " are " + names
         );
