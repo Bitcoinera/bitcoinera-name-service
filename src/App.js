@@ -11,7 +11,7 @@ import contractAbi from "./utils/contractABI.json";
 const TWITTER_HANDLE = "Bitcoin3ra";
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
 const tld = ".bit";
-const CONTRACT_ADDRESS = "0x8621D0f17893B2F1064fbBe57Ed611161E64A207";
+const CONTRACT_ADDRESS = "0x2BCAC680392e0208F673715d90908b4AbEEE4777";
 
 const App = () => {
   const [currentAccount, setCurrentAccount] = useState("");
@@ -245,6 +245,7 @@ const App = () => {
           }, 2000);
 
           setDomain("");
+          renderMints(); // Update the mints list
         } else {
           alert("Transaction failed! Please try again");
         }
